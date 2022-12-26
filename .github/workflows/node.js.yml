@@ -26,4 +26,8 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
       - run: npm test
