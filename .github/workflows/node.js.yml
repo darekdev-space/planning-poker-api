@@ -15,7 +15,14 @@ jobs:
         with:
           node-version: 16
           cache: 'npm'
+
       - run: npm ci
+
+      - uses: actions/cache@v2
+        id: node_modules
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
   test:
     needs: install
@@ -28,6 +35,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
+        if: steps.node_modules.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - run: npm test
