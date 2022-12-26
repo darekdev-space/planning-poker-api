@@ -8,13 +8,10 @@ on:
 
 jobs:
   test:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [18.x]
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -24,16 +21,22 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm test
+    - name: Upload node modules
+      uses: actions/upload-artifact@v3
+      with:
+        name: node_modules
+        path: node_modules
 
   lint:
-
     runs-on: ubuntu-latest
-
     strategy:
       matrix:
         node-version: [ 18.x ]
-
     steps:
+      - name: Download node modules
+        uses: actions/download-artifact@v3
+        with:
+          name: node_modules
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
