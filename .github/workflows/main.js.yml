@@ -44,6 +44,7 @@ jobs:
 
   lint:
     needs: install_and_test
+    fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -74,6 +75,7 @@ jobs:
   prettier_check:
     needs: install_and_test
     runs-on: ubuntu-latest
+    fail-fast: false
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
