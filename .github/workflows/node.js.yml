@@ -18,7 +18,7 @@ jobs:
 
       - run: npm ci
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         id: node_modules
         with:
           path: node_modules
@@ -35,7 +35,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        if: steps.node_modules.outputs.cache-hit != 'true'
+        if: steps.install.outputs.cache-hit != 'true'
         run: yarn install --frozen-lockfile
 
       - run: npm test
