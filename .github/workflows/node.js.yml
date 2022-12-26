@@ -9,30 +9,13 @@ on:
 jobs:
   install:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [18.x]
-    steps:
+  steps:
     - uses: actions/checkout@v3
-    - name: Cache node modules
-      id: cache-npm
-      uses: actions/cache@v3
-      env:
-        cache-name: cache-node-modules
+    - uses: actions/setup-node@v3
       with:
-        path: ~/.npm
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
-    - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-      name: List the state of node modules
-      continue-on-error: true
-      run: npm list
-
-    - name: Install dependencies
-      run: npm install
+        node-version: 16
+        cache: 'npm'
+    - run: npm ci
 
   test:
     needs: install
@@ -42,41 +25,21 @@ jobs:
         node-version: [18.x]
     steps:
       - uses: actions/checkout@v3
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Test
-        run: npm test
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: 'npm'
+      - run: npm test
 
   lint:
     needs: install
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [ 18.x ]
     steps:
-      - name: Download node modules
-        uses: actions/download-artifact@v3
-        with:
-          name: node_modules
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16
           cache: 'npm'
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run eslint
-        run: npm run lint
+      - run: npm test
