@@ -18,11 +18,27 @@ jobs:
 
       - run: npm ci
 
-      - uses: actions/cache@v3
-        id: node_modules
+      - name: Cache node modules
+        id: cache-npm
+        uses: actions/cache@v3
+        env:
+          cache-name: cache-node-modules
         with:
-          path: node_modules
-          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
+
+      - name: Install dep
+        run: npm ci
+
 
   test:
     needs: install
@@ -34,14 +50,18 @@ jobs:
           node-version: 16
           cache: 'npm'
 
-      - name: Install dependencies
-        if: steps.install.outputs.cache-hit != 'true'
-        run: yarn install --frozen-lockfile
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
+
+      - name: Install dep
+        run: npm ci
 
       - run: npm test
 
   lint:
-    needs: install
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -50,7 +70,12 @@ jobs:
           node-version: 16
           cache: 'npm'
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
+        name: List the state of node modules
+        continue-on-error: true
+        run: npm list
+
+      - name: Install dep
+        run: npm ci
 
       - run: npm run lint
