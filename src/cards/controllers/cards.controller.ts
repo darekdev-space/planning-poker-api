@@ -6,7 +6,7 @@ export class CardsController {
     constructor(private cardsService: CardsService) {}
 
     @Get('/templates')
-    getTemplates() {
-        return this.cardsService.getTemplates();
+    async getTemplates() {
+        return await this.cardsService.getTemplates();
     }
 }

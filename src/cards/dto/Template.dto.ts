@@ -1,5 +1,6 @@
 export class TemplateDto {
-  name: string
+    id: number;
+    name: string;
 
-  values: number[]
+    values: number[];
 }
