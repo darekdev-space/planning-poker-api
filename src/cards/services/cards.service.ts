@@ -17,4 +17,8 @@ export class CardsService {
 
         return template;
     }
+
+    async addTemplate(template: TemplateDto): Promise<void> {
+        await this.templateRepository.insert(template);
+    }
 }

@@ -1,5 +1,5 @@
 export class TemplateDto {
-    id: number;
+    id?: number;
     name: string;
 
     values: number[];
