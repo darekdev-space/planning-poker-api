@@ -10,6 +10,6 @@ export class TemplateEntity {
     @Column()
     name: string;
 
-    @Column("int", {array: true})
+    @Column('int', { array: true })
     values: number[];
 }

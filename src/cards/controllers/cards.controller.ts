@@ -1,7 +1,15 @@
-import { Body, Controller, Get, Post, Req, Res } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Post,
+    Req,
+    Res, UsePipes,
+    ValidationPipe
+} from "@nestjs/common";
 import { Response, Request } from 'express';
 import { CardsService } from '../services/cards.service';
-import { TemplateDto } from '../dto/Template.dto';
+import { TemplateDTO } from '../dto/Template.dto';
 
 @Controller('card')
 export class CardsController {
@@ -13,7 +21,11 @@ export class CardsController {
     }
 
     @Post('/template')
-    async addTemplate(@Body() template: TemplateDto, @Res() res: Response) {
+    @UsePipes(ValidationPipe)
+    async addTemplate(
+        @Body() template: TemplateDTO,
+        @Res() res: Response,
+    ) {
         try {
             await this.cardsService.addTemplate(template);
             res.status(200).send({ message: 'Template was created' });

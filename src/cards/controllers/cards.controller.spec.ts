@@ -17,7 +17,9 @@ describe('TEST CARDS CONTROLLER', () => {
     });
 
     it('should return all templates', async () => {
-        const templatesMock = [{ name: 'Test Template', values: [1, 2, 3, 5] }];
+        const templatesMock = [
+            { id: 123123, name: 'Test Template', values: [1, 2, 3, 5] },
+        ];
         jest.spyOn(cardsService, 'getTemplates').mockImplementation(() =>
             Promise.resolve(templatesMock),
         );

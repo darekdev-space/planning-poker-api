@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TemplateDto } from '../dto/Template.dto';
+import { TemplateDTO } from '../dto/Template.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TemplateEntity } from '../entities/Template.entity';
 import { Repository } from 'typeorm';
@@ -12,13 +12,13 @@ export class CardsService {
         private templateRepository: Repository<TemplateEntity>,
     ) {}
 
-    async getTemplates(): Promise<TemplateDto[]> {
+    async getTemplates(): Promise<TemplateDTO[]> {
         const template: TemplateEntity[] = await this.templateRepository.find();
 
         return template;
     }
 
-    async addTemplate(template: TemplateDto): Promise<void> {
+    async addTemplate(template: TemplateDTO): Promise<void> {
         await this.templateRepository.insert(template);
     }
 }
